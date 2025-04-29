@@ -15,7 +15,16 @@ async function connect() {
 }
 
 function query(sql, params) {
-  return connection.promise().query(sql, params);
+  return connection
+    .promise()
+    .query(sql, params)
+    .then(([rows]) => {
+      return rows;
+    })
+    .catch((error) => {
+      console.error("Lỗi khi thực hiện query:", error);
+      throw error;
+    });
 }
 
 module.exports = {
