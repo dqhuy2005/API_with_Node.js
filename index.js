@@ -13,8 +13,15 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/accounts", accountsRoute);
 
+// Home
 app.get("/", (req, res) => {
   res.send("API is running...");
+});
+
+// Login
+app.post("/login", (req, res) => {
+  res.send("Login endpoint");
+  console.log(req.body);
 });
 
 const PORT = process.env.PORT || 8080;
