@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 const register = async (username, password, email, image_url) => {
   const query =
-    "INSERT INTO users (username, password, email, image_url) VALUES (?, ?, ?, ?)";
+    "INSERT INTO accounts (username, password, email, image_url) VALUES (?, ?, ?, ?)";
   try {
     await db.query(query, [username, password]);
     console.log("User registered successfully");
@@ -12,7 +12,7 @@ const register = async (username, password, email, image_url) => {
 };
 
 const login = async (username, password) => {
-  const query = "SELECT * FROM users WHERE username = ? AND password = ?";
+  const query = "SELECT * FROM accounts WHERE username = ? AND password = ?";
   try {
     const [user] = await db.query(query, [username, password]);
     return user;

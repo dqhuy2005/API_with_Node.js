@@ -3,6 +3,7 @@ const db = require("./config/db");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const accountsRoute = require("./routes/account.route");
+const authRoute = require("./routes/auth.route");
 const app = express();
 dotenv.config();
 
@@ -19,10 +20,7 @@ app.get("/", (req, res) => {
 });
 
 // Login
-app.post("/login", (req, res) => {
-  res.send("Login endpoint");
-  console.log(req.body);
-});
+app.use("/api/auth", authRoute);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, async () => {
