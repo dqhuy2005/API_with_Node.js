@@ -1,27 +1,15 @@
-const db = require("../config/db");
+const authService = require("../services/auth.service");
 
-const register = async (username, password, email, image_url) => {
-  const query =
-    "INSERT INTO accounts (username, password, email, image_url) VALUES (?, ?, ?, ?)";
+const login = async (req, res) => {
   try {
-    await db.query(query, [username, password]);
-    console.log("User registered successfully");
+    const user = await authService.login(req.body.username, req.body.password);
+    res.status(200).json({ user });
   } catch (error) {
-    console.error("Error registering user: ", error);
-  }
-};
-
-const login = async (username, password) => {
-  const query = "SELECT * FROM accounts WHERE username = ? AND password = ?";
-  try {
-    const [user] = await db.query(query, [username, password]);
-    return user;
-  } catch (error) {
-    console.error(error);
+    console.error("Login error:", error.message);
+    res.status(400).json({ message: error.message });
   }
 };
 
 module.exports = {
-  register,
   login,
 };

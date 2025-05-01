@@ -3,16 +3,6 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controller/auth.controller");
 
-router.post("/login", async (req, res) => {
-  try {
-    const user = await authController.login(
-      req.body.username,
-      req.body.password
-    );
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
+router.post("/login", authController.login);
 
 module.exports = router;
