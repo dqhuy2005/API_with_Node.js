@@ -1,31 +1,54 @@
-class Account {
-  constructor(id, username, email, image_url) {
+const db = require("../config/db.js");
+class Product {
+  constructor(id, name, price, category_id, image_url) {
     this.id = id;
-    this.username = username;
-    this.email = email;
+    this.name = name;
+    this.price = price;
+    this.category_id = category_id;
     this.image_url = image_url;
   }
 
-  static async findById(id) {
-    const user = await db.query("SELECT * FROM accounts WHERE id = ?", [id]);
-    if (!user) {
-      throw new Error("User not found");
-    }
-    return user;
+  static async getAll() {
+    const products = await db.query("SELECT * FROM products");
+    return products.map(
+      (row) =>
+        new Product(row.id, row.name, row.price, row.category_id, row.image_url)
+    );
   }
 
-  static async login(username, password) {
-    const user = await db.query(
-      "SELECT * FROM accounts WHERE username = ? AND password = ?",
-      [username, password]
+  static async create(name, price, category_id, image_url) {
+    const product = await db.query(
+      "INSERT INTO products (name, price, category_id, image_url) VALUES (?, ?, ?, ?)",
+      [name, price, category_id, image_url]
     );
 
-    if (!user) {
-      throw new Error("Invalid username or password");
+    const findProduct = await db.query("SELECT * FROM products WHERE id = ?", [
+      product.insertId,
+    ]);
+
+    return findProduct;
+  }
+
+  static async getProductById(id) {
+    const product = await db.query("SELECT * FROM products WHERE id = ?", [id]);
+    if (product.length === 0) {
+      throw new Error("Product not found");
     }
+    return product;
+  }
 
-    console.log(`User ${username} logged in successfully.`);
+  static async update(id, name, price, category_id, image_url) {
+    const product = await db.query(
+      "UPDATE products SET name = ?, price = ?, category_id = ?, image_url = ? WHERE id = ?",
+      [name, price, category_id, image_url, id]
+    );
+    return product;
+  }
 
-    return user;
+  static async delete(id) {
+    const result = await db.query("DELETE FROM products WHERE id = ?", [id]);
+    return result.affectedRows > 0;
   }
 }
+
+module.exports = Product;
